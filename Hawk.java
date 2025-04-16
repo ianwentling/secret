@@ -48,7 +48,7 @@ public class Hawk {
     {
         return Damage;
     }
-public void setDamage()
+    public void setDamage()
 {
     this.Damage = Damage;
 }

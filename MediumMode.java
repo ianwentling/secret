@@ -10,15 +10,27 @@ public class MediumMode extends JFrame implements DifficultyMode{
     {return 0.5;}
 
 
-    private JFrame frame;
+
 
     public MediumMode()
     {
         setTitle("Medium Mode");
-        setSize(300,300);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setLocationRelativeTo(null);
+        setSize(500,500);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null); // Center Window
 
-        frame.setVisible(true);
+        JPanel panel = new JPanel(new BorderLayout());
+        JLabel label = new JLabel("Ahmed MediumMode", SwingConstants.CENTER );
+        panel.add(label, BorderLayout.CENTER);
+
+        JButton backButton = new JButton("Back to Menu");
+        backButton.addActionListener(e -> {
+            dispose(); // Close this window
+            new GameMenu(); // Reopen the main menu
+        });
+
+        panel.add(backButton, BorderLayout.SOUTH);
+        add(panel);
+        setVisible(true);
     }
 }
