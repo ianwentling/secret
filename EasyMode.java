@@ -32,6 +32,9 @@ public class EasyMode extends JFrame implements DifficultyMode {
 
         panel.add(backButton, BorderLayout.SOUTH);
         add(panel);
+        panel.setBackground(Color.CYAN);
+        // Change
+        //222
         setVisible(true);
     }
 
