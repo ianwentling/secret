@@ -15,6 +15,7 @@ public class EasyMode extends JFrame implements DifficultyMode {
 
     public EasyMode()
     {
+
         setTitle("Easy Mode");
         setSize(500,500);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -33,6 +34,13 @@ public class EasyMode extends JFrame implements DifficultyMode {
         panel.add(backButton, BorderLayout.SOUTH);
         add(panel);
         setVisible(true);
+        panel.setBackground(Color.CYAN);
+
+//        DodgyDuck dodgyDuck = new DodgyDuck();
+//        panel.add(dodgyDuck, BorderLayout.CENTER);
+//        pack();
+//        panel.setVisible(true);
+
     }
 
 
