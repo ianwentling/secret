@@ -12,15 +12,27 @@ public class HardMode extends JFrame implements DifficultyMode{
 
 
 
-    private JFrame frame;
+
 
     public HardMode()
     {
-        setTitle("Hard Mode");
-        setSize(300,300);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setLocationRelativeTo(null);
+        setTitle("Easy Mode");
+        setSize(500,500);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null); // Center Window
 
-        frame.setVisible(true);
+        JPanel panel = new JPanel(new BorderLayout());
+        JLabel label = new JLabel("Ahmed HardMode", SwingConstants.CENTER );
+        panel.add(label, BorderLayout.CENTER);
+
+        JButton backButton = new JButton("Back to Menu");
+        backButton.addActionListener(e -> {
+            dispose(); // Close this window
+            new GameMenu(); // Reopen the main menu
+        });
+
+        panel.add(backButton, BorderLayout.SOUTH);
+        add(panel);
+        setVisible(true);
     }
 }

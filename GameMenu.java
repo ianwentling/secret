@@ -28,6 +28,7 @@ public class GameMenu {
             public void actionPerformed(ActionEvent e) {
                 openEasyMode();
             }
+
         });
 
         JButton mediumButton = new JButton("Medium");
@@ -66,78 +67,86 @@ public class GameMenu {
     }
 
     private void openEasyMode() {
-        gameFrame = new JFrame("Easy Mode");
-        gameFrame.setSize(500, 500);
-        gameFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        gameFrame.setLocationRelativeTo(null); // Centers the window
+//        gameFrame = new JFrame("Easy Mode");
+//        gameFrame.setSize(500, 500);
+//        gameFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//        gameFrame.setLocationRelativeTo(null); // Centers the window
+//
+//
+//        JPanel easyPanel = new JPanel();
+//        easyPanel.setLayout(new BorderLayout());
+//        easyPanel.add(new JLabel("Easy Mode Content", SwingConstants.CENTER), BorderLayout.CENTER);
 
-        JPanel easyPanel = new JPanel();
-        easyPanel.setLayout(new BorderLayout());
-        easyPanel.add(new JLabel("Easy Mode Content", SwingConstants.CENTER), BorderLayout.CENTER);
+//        JButton backButton = new JButton("Back to Menu");
+//        backButton.addActionListener(new ActionListener() {
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                gameFrame.dispose();
+//                frame.setVisible(true);
+//
+//            }
+//        });
 
-        JButton backButton = new JButton("Back to Menu");
-        backButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                gameFrame.dispose();
-                frame.setVisible(true);
-            }
-        });
-
-        easyPanel.add(backButton, BorderLayout.SOUTH);
-        gameFrame.add(easyPanel);
-        gameFrame.setVisible(true);
-        frame.setVisible(false);
+        frame.setVisible(false);// Hides main menu
+        new EasyMode().setVisible(true);
+//        easyPanel.add(backButton, BorderLayout.SOUTH);
+//        gameFrame.add(easyPanel);
+//        gameFrame.setVisible(true);
+//        frame.setVisible(false);
     }
 
     private void openMediumMode() {
-        gameFrame = new JFrame("Medium Mode");
-        gameFrame.setSize(500, 500);
-        gameFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        gameFrame.setLocationRelativeTo(null); // Centers the window
-
-        JPanel mediumPanel = new JPanel();
-        mediumPanel.setLayout(new BorderLayout());
-        mediumPanel.add(new JLabel("Medium Mode Content", SwingConstants.CENTER), BorderLayout.CENTER);
-
-        JButton backButton = new JButton("Back to Menu");
-        backButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                gameFrame.dispose();
-                frame.setVisible(true);
-            }
-        });
-
-        mediumPanel.add(backButton, BorderLayout.SOUTH);
-        gameFrame.add(mediumPanel);
-        gameFrame.setVisible(true);
+//        gameFrame = new JFrame("Medium Mode");
+//        gameFrame.setSize(500, 500);
+//        gameFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//        gameFrame.setLocationRelativeTo(null); // Centers the window
+//
+//        JPanel mediumPanel = new JPanel();
+//        mediumPanel.setLayout(new BorderLayout());
+//        mediumPanel.add(new JLabel("Medium Mode Content", SwingConstants.CENTER), BorderLayout.CENTER);
+//
+//        JButton backButton = new JButton("Back to Menu");
+//        backButton.addActionListener(new ActionListener() {
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                gameFrame.dispose();
+//                frame.setVisible(true);
+//            }
+//        });
+//
+//        mediumPanel.add(backButton, BorderLayout.SOUTH);
+//        gameFrame.add(mediumPanel);
+//        gameFrame.setVisible(true);
+//        frame.setVisible(false);
         frame.setVisible(false);
+        new MediumMode().setVisible(true);
     }
 
     private void openHardMode() {
-        gameFrame = new JFrame("Hard Mode");
-        gameFrame.setSize(500, 500);
-        gameFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        gameFrame.setLocationRelativeTo(null); // Centers the window
-
-        JPanel hardPanel = new JPanel();
-        hardPanel.setLayout(new BorderLayout());
-        hardPanel.add(new JLabel("Hard Mode Content", SwingConstants.CENTER), BorderLayout.CENTER);
-
-        JButton backButton = new JButton("Back to Menu");
-        backButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                gameFrame.dispose();
-                frame.setVisible(true);
-            }
-        });
-
-        hardPanel.add(backButton, BorderLayout.SOUTH);
-        gameFrame.add(hardPanel);
-        gameFrame.setVisible(true);
+//        gameFrame = new JFrame("Hard Mode");
+//        gameFrame.setSize(500, 500);
+//        gameFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//        gameFrame.setLocationRelativeTo(null); // Centers the window
+//
+//        JPanel hardPanel = new JPanel();
+//        hardPanel.setLayout(new BorderLayout());
+//        hardPanel.add(new JLabel("Hard Mode Content", SwingConstants.CENTER), BorderLayout.CENTER);
+//
+//        JButton backButton = new JButton("Back to Menu");
+//        backButton.addActionListener(new ActionListener() {
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                gameFrame.dispose();
+//                frame.setVisible(true);
+//            }
+//        });
+//
+//        hardPanel.add(backButton, BorderLayout.SOUTH);
+//        gameFrame.add(hardPanel);
+//        gameFrame.setVisible(true);
+//        frame.setVisible(false);
         frame.setVisible(false);
+        new HardMode().setVisible(true);
     }
 
     private void openCharacterInfo() {
