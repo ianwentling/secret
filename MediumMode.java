@@ -20,8 +20,8 @@ public class MediumMode extends JFrame implements DifficultyMode{
         setLocationRelativeTo(null); // Center Window
 
         JPanel panel = new JPanel(new BorderLayout());
-        JLabel label = new JLabel("Ahmed MediumMode", SwingConstants.CENTER );
-        panel.add(label, BorderLayout.CENTER);
+        //JLabel label = new JLabel("Ahmed MediumMode", SwingConstants.CENTER );
+       // panel.add(label, BorderLayout.CENTER);
 
         JButton backButton = new JButton("Back to Menu");
         backButton.addActionListener(e -> {
@@ -31,6 +31,10 @@ public class MediumMode extends JFrame implements DifficultyMode{
 
         panel.add(backButton, BorderLayout.SOUTH);
         add(panel);
+
         setVisible(true);
+
+        DodgyDuck dodgyduck = new DodgyDuck();
+        panel.add(dodgyduck, BorderLayout.CENTER);
     }
 }
