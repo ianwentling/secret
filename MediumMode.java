@@ -31,7 +31,10 @@ public class MediumMode extends JFrame implements DifficultyMode{
 
         panel.add(backButton, BorderLayout.SOUTH);
         add(panel);
-        panel.setBackground(Color.CYAN);
+
         setVisible(true);
+
+        DodgyDuck dodgyDuck = new DodgyDuck();
+        panel.add(dodgyDuck, BorderLayout.CENTER);
     }
 }

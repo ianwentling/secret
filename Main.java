@@ -1,7 +1,7 @@
 public class Main {
     public static void main(String[] args) {
 
-        //Creating Egg Objects
+        //Creating Egg Objectss
         Egg myEgg = new Egg();
         Egg bigEgg = new Egg(10,5,6,"Yellow");
 
