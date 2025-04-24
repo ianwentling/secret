@@ -22,8 +22,7 @@ public class EasyMode extends JFrame implements DifficultyMode {
         setLocationRelativeTo(null); // Center Window
 
         JPanel panel = new JPanel(new BorderLayout());
-        JLabel label = new JLabel("Ahmed EasyMode", SwingConstants.CENTER );
-        panel.add(label, BorderLayout.CENTER);
+
 
         JButton backButton = new JButton("Back to Menu");
         backButton.addActionListener(e -> {
@@ -33,11 +32,12 @@ public class EasyMode extends JFrame implements DifficultyMode {
 
         panel.add(backButton, BorderLayout.SOUTH);
         add(panel);
-        setVisible(true);
-        panel.setBackground(Color.CYAN);
 
-//        DodgyDuck dodgyDuck = new DodgyDuck();
-//        panel.add(dodgyDuck, BorderLayout.CENTER);
+        setVisible(true);
+        // panel.setBackground(Color.CYAN);
+
+       DodgyDuck dodgyDuck = new DodgyDuck();
+        panel.add(dodgyDuck, BorderLayout.CENTER);
 //        pack();
 //        panel.setVisible(true);
 
