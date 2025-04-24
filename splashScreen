@@ -1,0 +1,54 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+
+public class splashScreen {
+    private JFrame splashFrame;
+
+    public splashScreen() {
+        splashFrame = new JFrame("Welcome");
+        splashFrame.setSize(500, 600);
+        splashFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        splashFrame.setLocationRelativeTo(null);
+
+        // Create a layered pane to hold both the image and button
+        JLayeredPane layeredPane = new JLayeredPane();
+        layeredPane.setPreferredSize(new Dimension(500, 600));
+
+        // Background image
+        ImageIcon logoIcon = new ImageIcon("C:\\Users\\suhai\\OneDrive - cord.edu\\CSC\\finaProjectMenu\\src\\gameLogo.png");
+        Image scaledImage = logoIcon.getImage().getScaledInstance(500, 600, Image.SCALE_SMOOTH);
+        JLabel imageLabel = new JLabel(new ImageIcon(scaledImage));
+        imageLabel.setBounds(0, 0, 500, 600);
+        layeredPane.add(imageLabel, JLayeredPane.DEFAULT_LAYER);
+
+        JButton continueButton = new JButton("Continue");
+        continueButton.setFont(new Font("Almost Textual", Font.BOLD, 20));
+        continueButton.setBounds(150, 500, 200, 75); // Position center-ish
+        continueButton.setVisible(false);
+
+        continueButton.setContentAreaFilled(true);
+        continueButton.setBorderPainted(true);
+        continueButton.setFocusPainted(true);
+        continueButton.setForeground(Color.BLACK);
+
+        continueButton.addActionListener((ActionEvent e) -> {
+            splashFrame.dispose();
+            new GameMenu();
+        });
+
+        layeredPane.add(continueButton, JLayeredPane.PALETTE_LAYER);
+
+        splashFrame.setContentPane(layeredPane);
+        splashFrame.pack();
+        splashFrame.setLocationRelativeTo(null);
+        splashFrame.setVisible(true);
+
+        // Timer to show button after 3 seconds
+        new Timer(3000, (ActionEvent e) -> continueButton.setVisible(true)).start();
+    }
+
+    public static void main(String[] args) {
+        new splashScreen();
+    }
+}
