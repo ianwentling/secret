@@ -1,4 +1,6 @@
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.*;
 public class DodgyDuck extends JPanel {
 
@@ -14,6 +16,10 @@ public class DodgyDuck extends JPanel {
     int duckY = 150;
     int duckWidth = 50;
     int duckHeight = 40;
+
+    //Score label
+    JLabel scoreLabel;
+    int scoreSeconds = 0;
 
     class Duck
     {
@@ -34,11 +40,27 @@ public class DodgyDuck extends JPanel {
 
 DodgyDuck() {
 
-
+    // Images
     backgroundImg = new ImageIcon("assets/Background.png").getImage();
     duckImg = new ImageIcon("assets/Duck1.png").getImage();
     SkyTubeImg = new ImageIcon("assets/SkyTube.png").getImage();
     FloorTubeImg = new ImageIcon("assets/FloorTube.png").getImage();
+   //Set up score label
+    scoreLabel = new JLabel("Score: 0", SwingConstants.CENTER);
+    scoreLabel.setFont(new Font("Arial", Font.BOLD, 20));
+    scoreLabel.setForeground(Color.BLACK);
+    add(scoreLabel, BorderLayout.NORTH);
+
+    //Start Timer here
+    Timer timer = new Timer(1000,new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+            scoreSeconds++;
+            scoreLabel.setText("Score: " + scoreSeconds);
+            repaint();
+        }
+    });
+    timer.start();
+
 
     //duck
     duck = new Duck(duckImg);
