@@ -12,52 +12,99 @@ public class GameMenu {
     public GameMenu() {
         frame = new JFrame("Game Menu");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(300, 300);
-        frame.setLayout(new GridLayout(5, 1)); // Increased grid rows for the new label
-        frame.setLocationRelativeTo(null); // Centers the window on the screen
+        frame.setSize(500, 600); // Bigger window
+        frame.setLayout(new GridLayout(5, 1));
+        frame.setLocationRelativeTo(null);
 
-        // Create a label to display the selected difficulty
-        difficultyLabel = new JLabel("Select Game Difficulty", SwingConstants.CENTER);
+        frame.getContentPane().setBackground(Color.black);
+
+        Font menuFont = new Font("Minecraft Ten", Font.BOLD, 45); // Bigger font
+        Font dFont = new Font("Minecraft Ten", Font.BOLD, 40); // Bigger font
+
+        difficultyLabel = new JLabel("Select Difficulty", SwingConstants.CENTER);
+        difficultyLabel.setForeground(Color.RED);
+        difficultyLabel.setFont(dFont);
         frame.add(difficultyLabel);
 
-        // Create difficulty buttons
         JButton easyButton = new JButton("Easy");
-        easyButton.setBackground(Color.GREEN);
-        easyButton.addActionListener(new ActionListener() {
+        easyButton.setBackground(Color.BLACK);
+        easyButton.setForeground(Color.GREEN);
+        easyButton.setFont(menuFont);
+        easyButton.addActionListener(e -> openEasyMode());
+        easyButton.setFocusPainted(false);           // removes blue focus border
+        easyButton.setBorderPainted(false);          // disables border painting
+        easyButton.setContentAreaFilled(false);
+        easyButton.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
-            public void actionPerformed(ActionEvent e) {
-                openEasyMode();
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                easyButton.setForeground(Color.WHITE); // Hover color
             }
 
+            @Override
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                easyButton.setForeground(Color.GREEN); // Original color
+            }
         });
+// removes button background fill (optional)
+
 
         JButton mediumButton = new JButton("Medium");
-        mediumButton.setBackground(Color.YELLOW);
-        mediumButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                openMediumMode();
+        mediumButton.setBackground(Color.BLACK);
+        mediumButton.setForeground(Color.YELLOW);
+        mediumButton.setFont(menuFont);
+        mediumButton.addActionListener(e -> openMediumMode());
+        mediumButton.setFocusPainted(false);           // removes blue focus border
+        mediumButton.setBorderPainted(false);          // disables border painting
+        mediumButton.setContentAreaFilled(false);
+        mediumButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                mediumButton.setForeground(Color.WHITE);
+            }
+
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                mediumButton.setForeground(Color.YELLOW);
             }
         });
+
 
         JButton hardButton = new JButton("Hard");
-        hardButton.setBackground(Color.RED);
-        hardButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                openHardMode();
+        hardButton.setBackground(Color.BLACK);
+        hardButton.setForeground(Color.RED);
+        hardButton.setFont(menuFont);
+        hardButton.addActionListener(e -> openHardMode());
+        hardButton.setFocusPainted(false);           // removes blue focus border
+        hardButton.setBorderPainted(false);          // disables border painting
+        hardButton.setContentAreaFilled(false);
+        hardButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                hardButton.setForeground(Color.WHITE);
+            }
+
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                hardButton.setForeground(Color.RED);
             }
         });
+
+
 
         JButton characterInfoButton = new JButton("Character Info");
-        characterInfoButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                openCharacterInfo();
+        characterInfoButton.setBackground(Color.BLACK);
+        characterInfoButton.setForeground(Color.PINK);
+        characterInfoButton.setFont(menuFont);
+        characterInfoButton.addActionListener(e -> openCharacterInfo());
+        characterInfoButton.setFocusPainted(false);           // removes blue focus border
+        characterInfoButton.setBorderPainted(false);          // disables border painting
+        characterInfoButton.setContentAreaFilled(false);
+        characterInfoButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                characterInfoButton.setForeground(Color.WHITE);
+            }
+
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                characterInfoButton.setForeground(Color.PINK);
             }
         });
 
-        // Add the buttons to the frame
         frame.add(easyButton);
         frame.add(mediumButton);
         frame.add(hardButton);
@@ -66,85 +113,22 @@ public class GameMenu {
         frame.setVisible(true);
     }
 
-    private void openEasyMode() {
-//        gameFrame = new JFrame("Easy Mode");
-//        gameFrame.setSize(500, 500);
-//        gameFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//        gameFrame.setLocationRelativeTo(null); // Centers the window
-//
-//
-//        JPanel easyPanel = new JPanel();
-//        easyPanel.setLayout(new BorderLayout());
-//        easyPanel.add(new JLabel("Easy Mode Content", SwingConstants.CENTER), BorderLayout.CENTER);
 
-//        JButton backButton = new JButton("Back to Menu");
-//        backButton.addActionListener(new ActionListener() {
-//            @Override
-//            public void actionPerformed(ActionEvent e) {
-//                gameFrame.dispose();
-//                frame.setVisible(true);
-//
-//            }
-//        });
-
+    private void openEasyMode()
+    {
         frame.setVisible(false);// Hides main menu
         new EasyMode().setVisible(true);
-//        easyPanel.add(backButton, BorderLayout.SOUTH);
-//        gameFrame.add(easyPanel);
-//        gameFrame.setVisible(true);
-//        frame.setVisible(false);
     }
 
-    private void openMediumMode() {
-//        gameFrame = new JFrame("Medium Mode");
-//        gameFrame.setSize(500, 500);
-//        gameFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//        gameFrame.setLocationRelativeTo(null); // Centers the window
-//
-//        JPanel mediumPanel = new JPanel();
-//        mediumPanel.setLayout(new BorderLayout());
-//        mediumPanel.add(new JLabel("Medium Mode Content", SwingConstants.CENTER), BorderLayout.CENTER);
-//
-//        JButton backButton = new JButton("Back to Menu");
-//        backButton.addActionListener(new ActionListener() {
-//            @Override
-//            public void actionPerformed(ActionEvent e) {
-//                gameFrame.dispose();
-//                frame.setVisible(true);
-//            }
-//        });
-//
-//        mediumPanel.add(backButton, BorderLayout.SOUTH);
-//        gameFrame.add(mediumPanel);
-//        gameFrame.setVisible(true);
-//        frame.setVisible(false);
+    private void openMediumMode()
+    {
         frame.setVisible(false);
         new MediumMode().setVisible(true);
     }
 
-    private void openHardMode() {
-//        gameFrame = new JFrame("Hard Mode");
-//        gameFrame.setSize(500, 500);
-//        gameFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//        gameFrame.setLocationRelativeTo(null); // Centers the window
-//
-//        JPanel hardPanel = new JPanel();
-//        hardPanel.setLayout(new BorderLayout());
-//        hardPanel.add(new JLabel("Hard Mode Content", SwingConstants.CENTER), BorderLayout.CENTER);
-//
-//        JButton backButton = new JButton("Back to Menu");
-//        backButton.addActionListener(new ActionListener() {
-//            @Override
-//            public void actionPerformed(ActionEvent e) {
-//                gameFrame.dispose();
-//                frame.setVisible(true);
-//            }
-//        });
-//
-//        hardPanel.add(backButton, BorderLayout.SOUTH);
-//        gameFrame.add(hardPanel);
-//        gameFrame.setVisible(true);
-//        frame.setVisible(false);
+    private void openHardMode()
+    {
+
         frame.setVisible(false);
         new HardMode().setVisible(true);
     }
