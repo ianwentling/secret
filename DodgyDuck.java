@@ -15,6 +15,11 @@ public class DodgyDuck extends JPanel {
     int duckWidth = 50;
     int duckHeight = 40;
 
+    // Instance variables for score
+    private JLabel scoreLabel;
+    private int scoreSeconds = 0;
+    private Timer scoreTimer;
+
     // Scroll
     private int backgroundX = 0;
 
@@ -88,6 +93,11 @@ public class DodgyDuck extends JPanel {
 
     private void setupGame() {
         setFocusable(true);
+        //Score label setup
+        scoreLabel = new JLabel("Score: 0", SwingConstants.CENTER );
+        scoreLabel.setFont(new Font("Arial", Font.BOLD, 20));
+        add(scoreLabel, BorderLayout.NORTH);
+
         addKeyListener(new KeyAdapter() {
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_UP) duck.y -= 20;
@@ -101,6 +111,15 @@ public class DodgyDuck extends JPanel {
             repaint();
         });
         timer.start();
+
+     //Score Timer
+        scoreTimer = new Timer(1000, e -> {
+         scoreSeconds++;
+         scoreLabel.setText("Score: " + scoreSeconds);
+
+        });
+        scoreTimer.start();
+
     }
 
     private void updateGame() {
@@ -145,7 +164,8 @@ public class DodgyDuck extends JPanel {
 
     private void gameOver() {
         timer.stop();
-        JOptionPane.showMessageDialog(this, "Game Over!");
+        scoreTimer.stop();
+        JOptionPane.showMessageDialog(this, "Game Over! Your score is: " + scoreSeconds);
         System.exit(0); // or return to menu
     }
 

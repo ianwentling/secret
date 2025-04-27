@@ -6,7 +6,7 @@ public class HardMode extends JFrame implements DifficultyMode{
     public int getPipeSpeed()
     {return 6;}
     public int getGapSize()
-    {return 5;}
+    {return 90;}
     public double getGravity()
     {return 0.7;}
 
@@ -36,7 +36,7 @@ public class HardMode extends JFrame implements DifficultyMode{
 
         setVisible(true);
 
-        DodgyDuck dodgyduck = new DodgyDuck();
+        DodgyDuck dodgyduck = new DodgyDuck(getPipeSpeed(), getGapSize());
         panel.add(dodgyduck, BorderLayout.CENTER);
     }
 }

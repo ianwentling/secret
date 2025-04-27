@@ -8,7 +8,7 @@ public class EasyMode extends JFrame implements DifficultyMode {
 
     {return 3;}
     public int getGapSize()
-    {return 50;}
+    {return 70;}
     public double getGravity()
     {return 0.4;}
 
@@ -22,7 +22,7 @@ public class EasyMode extends JFrame implements DifficultyMode {
 
         JPanel panel = new JPanel(new BorderLayout());
        // JLabel label = new JLabel("Ahmed EasyMode", SwingConstants.CENTER );
-        //panel.add(label, BorderLayout.CENTER);
+       // panel.add(label, BorderLayout.CENTER);
 
         JButton backButton = new JButton("Back to Menu");
         backButton.addActionListener(e -> {
