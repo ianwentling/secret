@@ -6,8 +6,7 @@ import javax.swing.*;
 
 public class DodgyDuck extends JPanel {
 
-
-
+    private AudioPlayerInterface player;  // audio player for the WHOOOLE class
 
     // Images
     Image backgroundImg, duckImg, SkyTubeImg, FloorTubeImg;
@@ -40,41 +39,25 @@ public class DodgyDuck extends JPanel {
 
     // Duck object
     class Duck {
-        int x = duckX;
-        int y = duckY;
-        int width = duckWidth;
-        int height = duckHeight;
+        int x = duckX, y = duckY, width = duckWidth, height = duckHeight;
         Image img;
-
-        Duck(Image img) {
-            this.img = img;
-        }
-
+        Duck(Image img) { this.img = img; }
         Rectangle getBounds() {
             return new Rectangle(x, y, width, height);
         }
-
     }
 
     // Pipe object
     class Pipe {
-        int x, heightTop, heightBottom;
-        int width = 100;
-
+        int x, heightTop, heightBottom, width = 100;
         Pipe(int x) {
             this.x = x;
-
-            // Random pipe height
             int minHeight = 50;
             int maxTop = getHeight() - gapSize - minHeight;
-            heightTop = new Random().nextInt(Math.max(maxTop, 1)) + minHeight;
+            heightTop = rand.nextInt(Math.max(maxTop, 1)) + minHeight;
             heightBottom = getHeight() - heightTop - gapSize;
         }
-
-        void move() {
-            this.x -= pipeSpeed;
-        }
-
+        void move() { x -= pipeSpeed; }
         void draw(Graphics g) {
             g.drawImage(SkyTubeImg, x, 0, width, heightTop, null);
             g.drawImage(FloorTubeImg, x, heightTop + gapSize, width, heightBottom, null);
@@ -83,7 +66,7 @@ public class DodgyDuck extends JPanel {
 
     // Constructors
     public DodgyDuck() {
-        this(2, 120,100);  // Default difficulty
+        this(2, 120, 100);
     }
 
     public DodgyDuck(int pipeSpeed, int gapSize, int eggSpawnRate) {
@@ -93,49 +76,51 @@ public class DodgyDuck extends JPanel {
 
         loadAssets();
         duck = new Duck(duckImg);
+
+        // get that audio in there
+        player = new AudioPlayer();
+        player.play("Assets/song.wav");
+
         setupGame();
     }
 
     private void loadAssets() {
         backgroundImg = new ImageIcon("Assets/Background.PNG").getImage();
-        duckImg = new ImageIcon("Assets/Duck1.PNG").getImage();
-        SkyTubeImg = new ImageIcon("Assets/SkyPipe.png").getImage();
-        FloorTubeImg = new ImageIcon("Assets/FloorPipe.png").getImage();
-
-
+        duckImg       = new ImageIcon("Assets/Duck1.PNG").getImage();
+        SkyTubeImg    = new ImageIcon("Assets/SkyPipe.png").getImage();
+        FloorTubeImg  = new ImageIcon("Assets/FloorPipe.png").getImage();
     }
 
     private void setupGame() {
+        setLayout(new BorderLayout());
         setFocusable(true);
-        //Score label setup
-        scoreLabel = new JLabel("Score: 0", SwingConstants.CENTER );
+
+        // Score label
+        scoreLabel = new JLabel("Score: 0", SwingConstants.CENTER);
         scoreLabel.setFont(new Font("Arial", Font.BOLD, 20));
         add(scoreLabel, BorderLayout.NORTH);
 
+        // Key controls
         addKeyListener(new KeyAdapter() {
             public void keyPressed(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_UP) duck.y -= 20;
+                if (e.getKeyCode() == KeyEvent.VK_UP)   duck.y -= 20;
                 if (e.getKeyCode() == KeyEvent.VK_DOWN) duck.y += 20;
             }
         });
 
-        // Start game loop
+        // Game loop timer
         timer = new Timer(20, e -> {
             updateGame();
             repaint();
         });
         timer.start();
-        AudioPlayerInterface player = new AudioPlayer();
-        player.play("Assets/song.wav");
 
-     //Score Timer
+        // Score timer
         scoreTimer = new Timer(1000, e -> {
-         scoreSeconds++;
-         scoreLabel.setText("Score: " + scoreSeconds);
-
+            scoreSeconds++;
+            scoreLabel.setText("Score: " + scoreSeconds);
         });
         scoreTimer.start();
-
     }
 
     private void updateGame() {
@@ -143,81 +128,75 @@ public class DodgyDuck extends JPanel {
         backgroundX -= pipeSpeed;
         if (backgroundX <= -getWidth()) backgroundX = 0;
 
-        // Only add a new pipe if the last one has moved enough
+        // Spawn/move pipes
         if (pipes.isEmpty() || pipes.get(pipes.size() - 1).x < getWidth() - 300) {
             pipes.add(new Pipe(getWidth()));
         }
-
-        // Move and recycle pipes
         ArrayList<Pipe> newPipes = new ArrayList<>();
-        for (Pipe pipe : pipes) {
-            pipe.move();
-            if (pipe.x + pipe.width > 0) newPipes.add(pipe);
+        for (Pipe p : pipes) {
+            p.move();
+            if (p.x + p.width > 0) newPipes.add(p);
         }
-
-        if (pipes.get(0).x + pipes.get(0).width < 0) {
-            newPipes.add(new Pipe(getWidth()));
-        }
-
         pipes = newPipes;
 
-        // Check for collisions
-        for (Pipe pipe : pipes) {
-            if (duck.x + duck.width > pipe.x && duck.x < pipe.x + pipe.width) {
-                if (duck.y < pipe.heightTop || duck.y + duck.height > pipe.heightTop + gapSize) {
+        // Collision with pipes
+        for (Pipe p : pipes) {
+            if (duck.x + duck.width > p.x && duck.x < p.x + p.width) {
+                if (duck.y < p.heightTop || duck.y + duck.height > p.heightTop + gapSize) {
                     gameOver();
                 }
             }
         }
 
-        // Check boundaries
+        // Boundary check
         if (duck.y < 0 || duck.y + duck.height > getHeight()) {
             gameOver();
         }
 
-        //Move Eggs
+        // Eggs movement & spawn
         ArrayList<Egg> newEggs = new ArrayList<>();
         for (Egg egg : eggs) {
             egg.move();
             if (egg.getX() + egg.getSize() > 0) newEggs.add(egg);
         }
         eggs = newEggs;
-
-        // Spawn egg occasionally
-        if (rand.nextInt(eggSpawnRate) == 0) {  // Chances of egg spawning
-            int randomY = rand.nextInt(getHeight() - 50);
-            eggs.add(new Egg(getWidth(), randomY, 15, pipeSpeed, 5, Color.WHITE));
+        if (rand.nextInt(eggSpawnRate) == 0) {
+            int y = rand.nextInt(getHeight() - 50);
+            eggs.add(new Egg(getWidth(), y, 15, pipeSpeed, 5, Color.WHITE));
         }
 
-        // Check for egg collection
-        Rectangle duckBounds = duck.getBounds();
-        ArrayList<Egg> collectedEggs = new ArrayList<>();
+        // Egg collection
+        Rectangle db = duck.getBounds();
+        ArrayList<Egg> collected = new ArrayList<>();
         for (Egg egg : eggs) {
-            if (egg.checkCollision(duckBounds)) {
-                scoreSeconds+= egg.getScore();
-                collectedEggs.add(egg);
+            if (egg.checkCollision(db)) {
+                scoreSeconds += egg.getScore();
+                collected.add(egg);
             }
         }
-        eggs.removeAll(collectedEggs);
+        eggs.removeAll(collected);
 
-        //Update scoreLabel
         scoreLabel.setText("Score: " + scoreSeconds);
     }
 
     private void gameOver() {
+        // Stop audio safely
+        if (player != null) {
+            player.stop();
+        }
+        player = new AudioPlayer();
+        player.play("Assets/yousuck.wav");
         timer.stop();
         scoreTimer.stop();
         JOptionPane.showMessageDialog(this, "Game Over! Your score is: " + scoreSeconds);
-        System.exit(0); // or return to menu
+        System.exit(0);
     }
 
-    public void paintComponent(Graphics g) {
+    @Override
+    protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        draw(g);
-    }
 
-    private void draw(Graphics g) {
-        // Draw scrolling background
+        // Draw background twice for scrolling effect
         g.drawImage(backgroundImg, backgroundX, 0, getWidth(), getHeight(), this);
         g.drawImage(backgroundImg, backgroundX + getWidth(), 0, getWidth(), getHeight(), this);
 
@@ -228,11 +207,10 @@ public class DodgyDuck extends JPanel {
         for (Pipe pipe : pipes) {
             pipe.draw(g);
         }
-        //Draw eggs
+
+        // Draw eggs
         for (Egg egg : eggs) {
             egg.draw(g);
         }
-       
-
     }
 }
