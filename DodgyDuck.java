@@ -19,6 +19,7 @@ public class DodgyDuck extends JPanel {
     private JLabel scoreLabel;
     private int scoreSeconds = 0;
     private Timer scoreTimer;
+    private int eggSpawnRate = 100;  // default easy mode
 
     // Scroll
     private int backgroundX = 0;
@@ -30,7 +31,9 @@ public class DodgyDuck extends JPanel {
     // Objects
     Duck duck;
     ArrayList<Pipe> pipes = new ArrayList<>();
+    ArrayList<Egg> eggs = new ArrayList<>();
     Timer timer;
+    Random rand = new Random();
 
     // Duck object
     class Duck {
@@ -42,6 +45,10 @@ public class DodgyDuck extends JPanel {
 
         Duck(Image img) {
             this.img = img;
+        }
+
+        Rectangle getBounds() {
+            return new Rectangle(x, y, width, height);
         }
     }
 
@@ -72,12 +79,13 @@ public class DodgyDuck extends JPanel {
 
     // Constructors
     public DodgyDuck() {
-        this(2, 120);  // Default difficulty
+        this(2, 120,100);  // Default difficulty
     }
 
-    public DodgyDuck(int pipeSpeed, int gapSize) {
+    public DodgyDuck(int pipeSpeed, int gapSize, int eggSpawnRate) {
         this.pipeSpeed = pipeSpeed;
         this.gapSize = gapSize;
+        this.eggSpawnRate = eggSpawnRate;
 
         loadAssets();
         duck = new Duck(duckImg);
@@ -89,6 +97,8 @@ public class DodgyDuck extends JPanel {
         duckImg = new ImageIcon("assets/Duck1.png").getImage();
         SkyTubeImg = new ImageIcon("assets/SkyPipe.png").getImage();
         FloorTubeImg = new ImageIcon("assets/FloorPipe.png").getImage();
+
+
     }
 
     private void setupGame() {
@@ -127,11 +137,9 @@ public class DodgyDuck extends JPanel {
         backgroundX -= pipeSpeed;
         if (backgroundX <= -getWidth()) backgroundX = 0;
 
-        // Add pipes if empty
-        if (pipes.isEmpty()) {
-            for (int i = 0; i < 3; i++) {
-                pipes.add(new Pipe(getWidth() + i * 300));
-            }
+        // Only add a new pipe if the last one has moved enough
+        if (pipes.isEmpty() || pipes.get(pipes.size() - 1).x < getWidth() - 300) {
+            pipes.add(new Pipe(getWidth()));
         }
 
         // Move and recycle pipes
@@ -160,6 +168,34 @@ public class DodgyDuck extends JPanel {
         if (duck.y < 0 || duck.y + duck.height > getHeight()) {
             gameOver();
         }
+
+        //Move Eggs
+        ArrayList<Egg> newEggs = new ArrayList<>();
+        for (Egg egg : eggs) {
+            egg.move();
+            if (egg.getX() + egg.getSize() > 0) newEggs.add(egg);
+        }
+        eggs = newEggs;
+
+        // Spawn egg occasionally
+        if (rand.nextInt(eggSpawnRate) == 0) {  // Chances of egg spawning
+            int randomY = rand.nextInt(getHeight() - 50);
+            eggs.add(new Egg(getWidth(), randomY, 15, pipeSpeed, 5, Color.WHITE));
+        }
+
+        // Check for egg collection
+        Rectangle duckBounds = duck.getBounds();
+        ArrayList<Egg> collectedEggs = new ArrayList<>();
+        for (Egg egg : eggs) {
+            if (egg.checkCollision(duckBounds)) {
+                scoreSeconds+= egg.getScore();
+                collectedEggs.add(egg);
+            }
+        }
+        eggs.removeAll(collectedEggs);
+
+        //Update scoreLabel
+        scoreLabel.setText("Score: " + scoreSeconds);
     }
 
     private void gameOver() {
@@ -186,5 +222,11 @@ public class DodgyDuck extends JPanel {
         for (Pipe pipe : pipes) {
             pipe.draw(g);
         }
+        //Draw eggs
+        for (Egg egg : eggs) {
+            egg.draw(g);
+        }
+       
+
     }
 }

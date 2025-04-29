@@ -35,7 +35,7 @@ public class MediumMode extends JFrame implements DifficultyMode{
         setVisible(true);
 
         // putting the speed and gap here
-        DodgyDuck dodgyduck = new DodgyDuck(getPipeSpeed(),getGapSize());
+        DodgyDuck dodgyduck = new DodgyDuck(getPipeSpeed(),getGapSize(),200);
         panel.add(dodgyduck, BorderLayout.CENTER);
     }
 }

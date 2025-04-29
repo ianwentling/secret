@@ -38,6 +38,8 @@ public class EasyMode extends JFrame implements DifficultyMode {
 
         DodgyDuck dodgyduck = new DodgyDuck();
         panel.add(dodgyduck, BorderLayout.CENTER);
+//        Egg egg = new Egg();
+//        panel.add(egg,BorderLayout.CENTER);
 
     }
 
