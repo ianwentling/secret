@@ -25,7 +25,7 @@ public class GameMenu {
         difficultyLabel.setForeground(Color.RED);
         difficultyLabel.setFont(dFont);
         frame.add(difficultyLabel);
-
+//hi
         JButton easyButton = new JButton("Easy");
         easyButton.setBackground(Color.BLACK);
         easyButton.setForeground(Color.GREEN);
