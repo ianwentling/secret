@@ -36,7 +36,7 @@ public class HardMode extends JFrame implements DifficultyMode{
 
         setVisible(true);
 
-        DodgyDuck dodgyduck = new DodgyDuck(getPipeSpeed(), getGapSize(),10);
+        DodgyDuck dodgyduck = new DodgyDuck(getPipeSpeed(), getGapSize(),200);
         panel.add(dodgyduck, BorderLayout.CENTER);
     }
 }
