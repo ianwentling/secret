@@ -21,11 +21,19 @@ public class DodgyDuck extends JPanel {
     // Game config
     int pipeSpeed = 2;
     int gapSize = 120;
+    int eggSpawnRate = 100;
 
     // Objects
     Duck duck;
     ArrayList<Pipe> pipes = new ArrayList<>();
+    ArrayList<Egg> eggs = new ArrayList<>();
     Timer timer;
+    Timer scoreTimer;
+    Random rand = new Random();
+
+    // Score
+    private JLabel scoreLabel;
+    private int scoreSeconds = 0;
 
     // Duck object
     class Duck {
@@ -38,6 +46,10 @@ public class DodgyDuck extends JPanel {
         Duck(Image img) {
             this.img = img;
         }
+
+        Rectangle getBounds() {
+            return new Rectangle(x, y, width, height);
+        }
     }
 
     // Pipe object
@@ -49,7 +61,7 @@ public class DodgyDuck extends JPanel {
             this.x = x;
             int minHeight = 50;
             int maxTop = getHeight() - gapSize - minHeight;
-            heightTop = new Random().nextInt(Math.max(maxTop, 1)) + minHeight;
+            heightTop = rand.nextInt(Math.max(maxTop, 1)) + minHeight;
             heightBottom = getHeight() - heightTop - gapSize;
         }
 
@@ -63,14 +75,14 @@ public class DodgyDuck extends JPanel {
         }
     }
 
-    // Constructors
     public DodgyDuck() {
-        this(2, 120);  // Default difficulty
+        this(2, 120, 100);
     }
 
-    public DodgyDuck(int pipeSpeed, int gapSize) {
+    public DodgyDuck(int pipeSpeed, int gapSize, int eggSpawnRate) {
         this.pipeSpeed = pipeSpeed;
         this.gapSize = gapSize;
+        this.eggSpawnRate = eggSpawnRate;
 
         loadAssets();
         duck = new Duck(duckImg);
@@ -85,7 +97,14 @@ public class DodgyDuck extends JPanel {
     }
 
     private void setupGame() {
+        setLayout(new BorderLayout());
         setFocusable(true);
+
+        scoreLabel = new JLabel("Score: 0", SwingConstants.CENTER);
+        scoreLabel.setFont(new Font("Minecraft", Font.BOLD, 20));
+        scoreLabel.setForeground(Color.WHITE);
+        add(scoreLabel, BorderLayout.NORTH);
+
         addKeyListener(new KeyAdapter() {
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_UP) duck.y -= 20;
@@ -98,16 +117,20 @@ public class DodgyDuck extends JPanel {
             repaint();
         });
         timer.start();
+
+        scoreTimer = new Timer(1000, e -> {
+            scoreSeconds++;
+            scoreLabel.setText("Score: " + scoreSeconds);
+        });
+        scoreTimer.start();
     }
 
     private void updateGame() {
         backgroundX -= pipeSpeed;
         if (backgroundX <= -getWidth()) backgroundX = 0;
 
-        if (pipes.isEmpty()) {
-            for (int i = 0; i < 3; i++) {
-                pipes.add(new Pipe(getWidth() + i * 300));
-            }
+        if (pipes.isEmpty() || pipes.get(pipes.size() - 1).x < getWidth() - 300) {
+            pipes.add(new Pipe(getWidth()));
         }
 
         ArrayList<Pipe> newPipes = new ArrayList<>();
@@ -115,11 +138,6 @@ public class DodgyDuck extends JPanel {
             pipe.move();
             if (pipe.x + pipe.width > 0) newPipes.add(pipe);
         }
-
-        if (pipes.get(0).x + pipes.get(0).width < 0) {
-            newPipes.add(new Pipe(getWidth()));
-        }
-
         pipes = newPipes;
 
         for (Pipe pipe : pipes) {
@@ -133,12 +151,61 @@ public class DodgyDuck extends JPanel {
         if (duck.y < 0 || duck.y + duck.height > getHeight()) {
             gameOver();
         }
+
+        ArrayList<Egg> newEggs = new ArrayList<>();
+        for (Egg egg : eggs) {
+            egg.move();
+            if (egg.getX() + egg.getSize() > 0) newEggs.add(egg);
+        }
+        eggs = newEggs;
+
+        if (rand.nextInt(eggSpawnRate) == 0) {
+            int eggSize = 15;
+            int attempts = 0;
+            boolean valid = false;
+            int eggY = 0;
+
+            while (!valid && attempts < 10) {
+                eggY = rand.nextInt(getHeight() - eggSize);
+                Rectangle eggRect = new Rectangle(getWidth(), eggY, eggSize, eggSize);
+                valid = true;
+
+                for (Pipe pipe : pipes) {
+                    Rectangle topPipeRect = new Rectangle(pipe.x, 0, pipe.width, pipe.heightTop);
+                    Rectangle bottomPipeRect = new Rectangle(pipe.x, pipe.heightTop + gapSize, pipe.width, pipe.heightBottom);
+
+                    if (eggRect.intersects(topPipeRect) || eggRect.intersects(bottomPipeRect)) {
+                        valid = false;
+                        break;
+                    }
+                }
+                attempts++;
+            }
+
+            if (valid) {
+                eggs.add(new Egg(getWidth(), eggY, eggSize, pipeSpeed, 5, Color.YELLOW));
+            }
+        }
+
+
+        Rectangle duckBounds = duck.getBounds();
+        ArrayList<Egg> collectedEggs = new ArrayList<>();
+        for (Egg egg : eggs) {
+            if (egg.checkCollision(duckBounds)) {
+                scoreSeconds += egg.getScore();
+                collectedEggs.add(egg);
+            }
+        }
+        eggs.removeAll(collectedEggs);
+
+        scoreLabel.setText("Score: " + scoreSeconds);
     }
 
     private void gameOver() {
         timer.stop();
+        scoreTimer.stop();
 
-        JDialog gameOverDialog = new JDialog((JFrame) SwingUtilities.getWindowAncestor(this), "Game Over", true);
+        JDialog gameOverDialog = new JDialog((JFrame) SwingUtilities.getWindowAncestor(this), "Game Over!! " + scoreSeconds, true);
         gameOverDialog.setSize(300, 250);
         gameOverDialog.setLayout(new GridLayout(3, 1, 10, 10));
         gameOverDialog.setLocationRelativeTo(null);
@@ -146,7 +213,7 @@ public class DodgyDuck extends JPanel {
         JPanel panel = new JPanel(new GridLayout(3, 1, 10, 10));
         panel.setBackground(Color.BLACK);
 
-        JLabel gameOverLabel = new JLabel("Game Over!", SwingConstants.CENTER);
+        JLabel gameOverLabel = new JLabel("Score Is " + scoreSeconds, SwingConstants.CENTER);
         gameOverLabel.setFont(new Font("Minecraft", Font.BOLD, 22));
         gameOverLabel.setForeground(Color.WHITE);
         panel.add(gameOverLabel);
@@ -157,39 +224,26 @@ public class DodgyDuck extends JPanel {
         restartButton.setFont(new Font("Minecraft", Font.BOLD, 20));
         menuButton.setFont(new Font("Minecraft", Font.BOLD, 20));
 
-        // Restart button style
         restartButton.setBackground(Color.BLACK);
         restartButton.setForeground(Color.RED);
         restartButton.setFocusPainted(false);
         restartButton.setBorderPainted(false);
         restartButton.setContentAreaFilled(false);
 
-        // Menu button style
         menuButton.setBackground(Color.BLACK);
         menuButton.setForeground(Color.GREEN);
         menuButton.setFocusPainted(false);
         menuButton.setBorderPainted(false);
         menuButton.setContentAreaFilled(false);
 
-        // Hover effects
         restartButton.addMouseListener(new MouseAdapter() {
-            public void mouseEntered(MouseEvent e) {
-                restartButton.setForeground(Color.WHITE);
-            }
-
-            public void mouseExited(MouseEvent e) {
-                restartButton.setForeground(Color.RED);
-            }
+            public void mouseEntered(MouseEvent e) { restartButton.setForeground(Color.WHITE); }
+            public void mouseExited(MouseEvent e) { restartButton.setForeground(Color.RED); }
         });
 
         menuButton.addMouseListener(new MouseAdapter() {
-            public void mouseEntered(MouseEvent e) {
-                menuButton.setForeground(Color.WHITE);
-            }
-
-            public void mouseExited(MouseEvent e) {
-                menuButton.setForeground(Color.GREEN);
-            }
+            public void mouseEntered(MouseEvent e) { menuButton.setForeground(Color.WHITE); }
+            public void mouseExited(MouseEvent e) { menuButton.setForeground(Color.GREEN); }
         });
 
         panel.add(restartButton);
@@ -197,7 +251,6 @@ public class DodgyDuck extends JPanel {
 
         gameOverDialog.setContentPane(panel);
 
-        // Restart the game
         restartButton.addActionListener(e -> {
             gameOverDialog.dispose();
             JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(this);
@@ -207,11 +260,10 @@ public class DodgyDuck extends JPanel {
             newGameFrame.setSize(700, 700);
             newGameFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             newGameFrame.setLocationRelativeTo(null);
-            newGameFrame.add(new DodgyDuck(pipeSpeed, gapSize));
+            newGameFrame.add(new DodgyDuck(pipeSpeed, gapSize, eggSpawnRate));
             newGameFrame.setVisible(true);
         });
 
-        // Back to menu
         menuButton.addActionListener(e -> {
             gameOverDialog.dispose();
             JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(this);
@@ -221,7 +273,6 @@ public class DodgyDuck extends JPanel {
 
         gameOverDialog.setVisible(true);
     }
-
 
     @Override
     public void paintComponent(Graphics g) {
@@ -234,8 +285,7 @@ public class DodgyDuck extends JPanel {
         g.drawImage(backgroundImg, backgroundX + getWidth(), 0, getWidth(), getHeight(), this);
         g.drawImage(duckImg, duck.x, duck.y, duck.width, duck.height, this);
 
-        for (Pipe pipe : pipes) {
-            pipe.draw(g);
-        }
+        for (Pipe pipe : pipes) pipe.draw(g);
+        for (Egg egg : eggs) egg.draw(g);
     }
 }
