@@ -47,8 +47,6 @@ public class DodgyDuck extends JPanel {
 
         Pipe(int x) {
             this.x = x;
-
-            // Random pipe height
             int minHeight = 50;
             int maxTop = getHeight() - gapSize - minHeight;
             heightTop = new Random().nextInt(Math.max(maxTop, 1)) + minHeight;
@@ -80,10 +78,10 @@ public class DodgyDuck extends JPanel {
     }
 
     private void loadAssets() {
-        backgroundImg = new ImageIcon("assets/Background.png").getImage();
-        duckImg = new ImageIcon("assets/Duck1.png").getImage();
-        SkyTubeImg = new ImageIcon("assets/SkyPipe.png").getImage();
-        FloorTubeImg = new ImageIcon("assets/FloorPipe.png").getImage();
+        backgroundImg = new ImageIcon("C:\\Users\\suhai\\OneDrive - cord.edu\\CSC\\finaProjectMenu\\src\\skyBackground.png").getImage();
+        duckImg = new ImageIcon("C:\\Users\\suhai\\OneDrive - cord.edu\\CSC\\finaProjectMenu\\src\\Duck1.PNG").getImage();
+        SkyTubeImg = new ImageIcon("C:\\Users\\suhai\\OneDrive - cord.edu\\CSC\\finaProjectMenu\\src\\SkyPipe.png").getImage();
+        FloorTubeImg = new ImageIcon("C:\\Users\\suhai\\OneDrive - cord.edu\\CSC\\finaProjectMenu\\src\\FloorPipe.png").getImage();
     }
 
     private void setupGame() {
@@ -95,7 +93,6 @@ public class DodgyDuck extends JPanel {
             }
         });
 
-        // Start game loop
         timer = new Timer(20, e -> {
             updateGame();
             repaint();
@@ -104,18 +101,15 @@ public class DodgyDuck extends JPanel {
     }
 
     private void updateGame() {
-        // Scroll background
         backgroundX -= pipeSpeed;
         if (backgroundX <= -getWidth()) backgroundX = 0;
 
-        // Add pipes if empty
         if (pipes.isEmpty()) {
             for (int i = 0; i < 3; i++) {
                 pipes.add(new Pipe(getWidth() + i * 300));
             }
         }
 
-        // Move and recycle pipes
         ArrayList<Pipe> newPipes = new ArrayList<>();
         for (Pipe pipe : pipes) {
             pipe.move();
@@ -128,7 +122,6 @@ public class DodgyDuck extends JPanel {
 
         pipes = newPipes;
 
-        // Check for collisions
         for (Pipe pipe : pipes) {
             if (duck.x + duck.width > pipe.x && duck.x < pipe.x + pipe.width) {
                 if (duck.y < pipe.heightTop || duck.y + duck.height > pipe.heightTop + gapSize) {
@@ -137,7 +130,6 @@ public class DodgyDuck extends JPanel {
             }
         }
 
-        // Check boundaries
         if (duck.y < 0 || duck.y + duck.height > getHeight()) {
             gameOver();
         }
@@ -145,24 +137,103 @@ public class DodgyDuck extends JPanel {
 
     private void gameOver() {
         timer.stop();
-        JOptionPane.showMessageDialog(this, "Game Over!");
-        System.exit(0); // or return to menu
+
+        JDialog gameOverDialog = new JDialog((JFrame) SwingUtilities.getWindowAncestor(this), "Game Over", true);
+        gameOverDialog.setSize(300, 250);
+        gameOverDialog.setLayout(new GridLayout(3, 1, 10, 10));
+        gameOverDialog.setLocationRelativeTo(null);
+
+        JPanel panel = new JPanel(new GridLayout(3, 1, 10, 10));
+        panel.setBackground(Color.BLACK);
+
+        JLabel gameOverLabel = new JLabel("Game Over!", SwingConstants.CENTER);
+        gameOverLabel.setFont(new Font("Minecraft", Font.BOLD, 22));
+        gameOverLabel.setForeground(Color.WHITE);
+        panel.add(gameOverLabel);
+
+        JButton restartButton = new JButton("Restart");
+        JButton menuButton = new JButton("Back to Menu");
+
+        restartButton.setFont(new Font("Minecraft", Font.BOLD, 20));
+        menuButton.setFont(new Font("Minecraft", Font.BOLD, 20));
+
+        // Restart button style
+        restartButton.setBackground(Color.BLACK);
+        restartButton.setForeground(Color.RED);
+        restartButton.setFocusPainted(false);
+        restartButton.setBorderPainted(false);
+        restartButton.setContentAreaFilled(false);
+
+        // Menu button style
+        menuButton.setBackground(Color.BLACK);
+        menuButton.setForeground(Color.GREEN);
+        menuButton.setFocusPainted(false);
+        menuButton.setBorderPainted(false);
+        menuButton.setContentAreaFilled(false);
+
+        // Hover effects
+        restartButton.addMouseListener(new MouseAdapter() {
+            public void mouseEntered(MouseEvent e) {
+                restartButton.setForeground(Color.WHITE);
+            }
+
+            public void mouseExited(MouseEvent e) {
+                restartButton.setForeground(Color.RED);
+            }
+        });
+
+        menuButton.addMouseListener(new MouseAdapter() {
+            public void mouseEntered(MouseEvent e) {
+                menuButton.setForeground(Color.WHITE);
+            }
+
+            public void mouseExited(MouseEvent e) {
+                menuButton.setForeground(Color.GREEN);
+            }
+        });
+
+        panel.add(restartButton);
+        panel.add(menuButton);
+
+        gameOverDialog.setContentPane(panel);
+
+        // Restart the game
+        restartButton.addActionListener(e -> {
+            gameOverDialog.dispose();
+            JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(this);
+            frame.dispose();
+
+            JFrame newGameFrame = new JFrame("Dodgy Duck");
+            newGameFrame.setSize(700, 700);
+            newGameFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            newGameFrame.setLocationRelativeTo(null);
+            newGameFrame.add(new DodgyDuck(pipeSpeed, gapSize));
+            newGameFrame.setVisible(true);
+        });
+
+        // Back to menu
+        menuButton.addActionListener(e -> {
+            gameOverDialog.dispose();
+            JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(this);
+            frame.dispose();
+            new GameMenu();
+        });
+
+        gameOverDialog.setVisible(true);
     }
 
+
+    @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         draw(g);
     }
 
     private void draw(Graphics g) {
-        // Draw scrolling background
         g.drawImage(backgroundImg, backgroundX, 0, getWidth(), getHeight(), this);
         g.drawImage(backgroundImg, backgroundX + getWidth(), 0, getWidth(), getHeight(), this);
-
-        // Draw duck
         g.drawImage(duckImg, duck.x, duck.y, duck.width, duck.height, this);
 
-        // Draw pipes
         for (Pipe pipe : pipes) {
             pipe.draw(g);
         }
