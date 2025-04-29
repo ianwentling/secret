@@ -1,41 +1,22 @@
 import javax.swing.*;
-import java.awt.*;
-public class HardMode extends JFrame implements DifficultyMode{
 
+public class HardMode extends JFrame implements DifficultyMode {
 
-    public int getPipeSpeed()
-    {return 6;}
-    public int getGapSize()
-    {return 5;}
-    public double getGravity()
-    {return 0.7;}
+    public int getPipeSpeed() { return 5; }
+    public int getGapSize() { return 90; }
+    public double getGravity() { return 0.8; }
+    public int getEggSpawnRate() { return 140; } // fewer eggs
 
-
-
-
-
-    public HardMode()
-    {
-        setTitle("Easy Mode");
-        setSize(500,500);
+    public HardMode() {
+        setTitle("Hard Mode");
+        setSize(700, 700);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null); // Center Window
+        setLocationRelativeTo(null);
 
-        JPanel panel = new JPanel(new BorderLayout());
-        JLabel label = new JLabel("Ahmed HardMode", SwingConstants.CENTER );
-        panel.add(label, BorderLayout.CENTER);
+        DodgyDuck gamePanel = new DodgyDuck(getPipeSpeed(), getGapSize(), getEggSpawnRate());
+        add(gamePanel);
 
-        JButton backButton = new JButton("Back to Menu");
-        backButton.addActionListener(e -> {
-            dispose(); // Close this window
-            new GameMenu(); // Reopen the main menu
-        });
-
-        panel.add(backButton, BorderLayout.SOUTH);
-        add(panel);
         setVisible(true);
-
-        DodgyDuck dodgyDuck = new DodgyDuck();
-        panel.add(dodgyDuck, BorderLayout.CENTER);
     }
 }
+
