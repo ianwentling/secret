@@ -180,6 +180,13 @@ public class DodgyDuck extends JPanel {
     }
 
     private void gameOver() {
+        //stop audio player -ian
+        if (player != null) {
+            player.stop();
+        }
+        //play new audio
+        player = new AudioPlayer();
+        player.play("Assets/yousuck.wav");
         timer.stop();
 
         JDialog gameOverDialog = new JDialog((JFrame) SwingUtilities.getWindowAncestor(this), "Game Over", true);
