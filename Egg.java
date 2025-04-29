@@ -26,7 +26,7 @@ public class Egg {
 
     //Draws the egg
     private void loadImage() {
-        EggImg = new ImageIcon("assets/Egg.PNG").getImage();
+        EggImg = new ImageIcon("Assets/Egg.PNG").getImage();
     }
 
     // Moves left

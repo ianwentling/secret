@@ -6,6 +6,9 @@ import javax.swing.*;
 
 public class DodgyDuck extends JPanel {
 
+
+
+
     // Images
     Image backgroundImg, duckImg, SkyTubeImg, FloorTubeImg;
 
@@ -50,6 +53,7 @@ public class DodgyDuck extends JPanel {
         Rectangle getBounds() {
             return new Rectangle(x, y, width, height);
         }
+
     }
 
     // Pipe object
@@ -93,10 +97,10 @@ public class DodgyDuck extends JPanel {
     }
 
     private void loadAssets() {
-        backgroundImg = new ImageIcon("assets/Background.png").getImage();
-        duckImg = new ImageIcon("assets/Duck1.png").getImage();
-        SkyTubeImg = new ImageIcon("assets/SkyPipe.png").getImage();
-        FloorTubeImg = new ImageIcon("assets/FloorPipe.png").getImage();
+        backgroundImg = new ImageIcon("Assets/Background.PNG").getImage();
+        duckImg = new ImageIcon("Assets/Duck1.PNG").getImage();
+        SkyTubeImg = new ImageIcon("Assets/SkyPipe.png").getImage();
+        FloorTubeImg = new ImageIcon("Assets/FloorPipe.png").getImage();
 
 
     }
@@ -121,6 +125,8 @@ public class DodgyDuck extends JPanel {
             repaint();
         });
         timer.start();
+        AudioPlayerInterface player = new AudioPlayer();
+        player.play("Assets/song.wav");
 
      //Score Timer
         scoreTimer = new Timer(1000, e -> {
