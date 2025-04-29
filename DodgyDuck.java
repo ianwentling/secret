@@ -180,16 +180,90 @@ public class DodgyDuck extends JPanel {
     }
 
     private void gameOver() {
-        // Stop audio safely
-        if (player != null) {
-            player.stop();
-        }
-        player = new AudioPlayer();
-        player.play("Assets/yousuck.wav");
         timer.stop();
-        scoreTimer.stop();
-        JOptionPane.showMessageDialog(this, "Game Over! Your score is: " + scoreSeconds);
-        System.exit(0);
+
+        JDialog gameOverDialog = new JDialog((JFrame) SwingUtilities.getWindowAncestor(this), "Game Over", true);
+        gameOverDialog.setSize(300, 250);
+        gameOverDialog.setLayout(new GridLayout(3, 1, 10, 10));
+        gameOverDialog.setLocationRelativeTo(null);
+
+        JPanel panel = new JPanel(new GridLayout(3, 1, 10, 10));
+        panel.setBackground(Color.BLACK);
+
+        JLabel gameOverLabel = new JLabel("Game Over!", SwingConstants.CENTER);
+        gameOverLabel.setFont(new Font("Minecraft", Font.BOLD, 22));
+        gameOverLabel.setForeground(Color.WHITE);
+        panel.add(gameOverLabel);
+
+        JButton restartButton = new JButton("Restart");
+        JButton menuButton = new JButton("Back to Menu");
+
+        restartButton.setFont(new Font("Minecraft", Font.BOLD, 20));
+        menuButton.setFont(new Font("Minecraft", Font.BOLD, 20));
+
+        // Restart button style
+        restartButton.setBackground(Color.BLACK);
+        restartButton.setForeground(Color.RED);
+        restartButton.setFocusPainted(false);
+        restartButton.setBorderPainted(false);
+        restartButton.setContentAreaFilled(false);
+
+        // Menu button style
+        menuButton.setBackground(Color.BLACK);
+        menuButton.setForeground(Color.GREEN);
+        menuButton.setFocusPainted(false);
+        menuButton.setBorderPainted(false);
+        menuButton.setContentAreaFilled(false);
+
+        // Hover effects
+        restartButton.addMouseListener(new MouseAdapter() {
+            public void mouseEntered(MouseEvent e) {
+                restartButton.setForeground(Color.WHITE);
+            }
+
+            public void mouseExited(MouseEvent e) {
+                restartButton.setForeground(Color.RED);
+            }
+        });
+
+        menuButton.addMouseListener(new MouseAdapter() {
+            public void mouseEntered(MouseEvent e) {
+                menuButton.setForeground(Color.WHITE);
+            }
+
+            public void mouseExited(MouseEvent e) {
+                menuButton.setForeground(Color.GREEN);
+            }
+        });
+
+        panel.add(restartButton);
+        panel.add(menuButton);
+
+        gameOverDialog.setContentPane(panel);
+
+        // Restart the game
+        restartButton.addActionListener(e -> {
+            gameOverDialog.dispose();
+            JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(this);
+            frame.dispose();
+
+            JFrame newGameFrame = new JFrame("Dodgy Duck");
+            newGameFrame.setSize(700, 700);
+            newGameFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            newGameFrame.setLocationRelativeTo(null);
+            newGameFrame.add(new DodgyDuck(pipeSpeed, gapSize,100));
+            newGameFrame.setVisible(true);
+        });
+
+        // Back to menu
+        menuButton.addActionListener(e -> {
+            gameOverDialog.dispose();
+            JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(this);
+            frame.dispose();
+            new GameMenu();
+        });
+
+        gameOverDialog.setVisible(true);
     }
 
     @Override
